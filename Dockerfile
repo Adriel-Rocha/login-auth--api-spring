@@ -1,9 +1,10 @@
 FROM maven:3.9.10-amazoncorretto-17 as build
 WORKDIR /app
 COPY . .
-RUN mvn clean package -X -DskipTests
+RUN mvn clean package -DskipTests
 
-FROM openjdk-17-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY --from=build ./app/target/*.jar ./loginauthapp.jar
-ENTRYPOINT java -jar loginauthapp.jar
+COPY --from=build ./app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
